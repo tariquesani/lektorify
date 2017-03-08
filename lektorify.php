@@ -261,7 +261,8 @@ class Lektorify {
       $output .= $this->convert_featured_image($post);
 
       $output .= "body: \n";
-
+      $output .= "#### raw #### \n html: \n";
+      
       $output .= $this->convert_content( $post );
 
       $this->write( $output, $post );
