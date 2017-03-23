@@ -88,7 +88,16 @@ class Lektorify {
 
   public function setup_fields() {
     add_settings_field( 'path_field', 'Path', array( $this, 'field_callback' ), 'lektorify_fields', 'path_section' );
-    register_setting( 'lektorify_fields', 'path_field' );
+    register_setting( 'lektorify_fields', 'path_field',[$this, 'path_field_validator'] );
+  }
+
+  public function path_field_validator($input) {
+    if (!is_writable($input.'/blog')) {
+      add_settings_error('path_field','path_field_error','The path should be writable by webserver and have a directory called "blog", check path and permissions');
+      return;
+    } else {
+      return $input;
+    }
   }
 
   public function field_callback( $arguments ) {
@@ -200,10 +209,10 @@ class Lektorify {
 
         $full_image_url = wp_get_attachment_image_src($attachment->ID, 'full');
 
-        $image_path = parse_url($full_image_url[0], PHP_URL_PATH);
+        $image_path = parse_url($full_image_url[0]);
 
-        $content = str_replace('http://tarique.sanisoft.com'.dirname($image_path).'/', '', $content);
-        $content = str_replace(dirname($image_path).'/', '', $content);
+        $content = str_replace($image_path['scheme'].'://'.$image_path['host'].dirname($image_path['path']).'/', '', $content);
+        $content = str_replace(dirname($image_path['path']).'/', '', $content);
     }
 
 
@@ -279,10 +288,8 @@ class Lektorify {
     if ( has_post_thumbnail($post)) {
       $full_image_url = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID),'full');
 
-      $full_image_url_array = explode('/',parse_url($full_image_url[0],PHP_URL_PATH));
+      $featured_image_filename = basename(parse_url($full_image_url[0],PHP_URL_PATH));
 
-      //Use basename() instead
-      $featured_image_filename = $full_image_url_array[count($full_image_url_array)-1];
       $output = "featured_image: ".$featured_image_filename."\n";
       $output .= "---\n";
       $this->featured_image_filename = $featured_image_filename;
