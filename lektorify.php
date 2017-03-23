@@ -82,7 +82,7 @@ class Lektorify {
   }
 
   public function section_callback( $arguments ) {
-    echo 'Add complete absolute path for your lektor content blog, Also ensure that the webserver user can write to this path';
+    echo 'Add complete absolute path for your lektor content, Also ensure that there is a directory called "blog" in it and the webserver user can write to this path';
   }
 
 
