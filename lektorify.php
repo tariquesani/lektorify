@@ -336,6 +336,8 @@ class Lektorify {
 
         /* Copy only if image finds a mention in the content or is full sized. */ 
         if (strpos($post->post_content, $image_filename)|| $size=='full') {
+          //echo $full_image_path."\n";
+          //echo $this->dir .'/blog/'.get_page_uri( $post->id ).'/'.$image_filename."\n\n";
           copy($full_image_path, $this->dir .'/blog/'.get_page_uri( $post->id ).'/'.$image_filename);
         }
 
