@@ -328,7 +328,9 @@ class Lektorify {
 
         $image_path = parse_url($full_image_url[0], PHP_URL_PATH);
         
-        $full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + strlen(basename($full_basepath)));
+        //$full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + strlen(basename($full_basepath)));
+
+        $full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + 1);
         
         $image_filename = basename($image_path);      
 
