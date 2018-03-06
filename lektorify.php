@@ -299,12 +299,13 @@ class Lektorify {
   }
 
   public function get_attachments($id){
-    return get_children(array('post_parent' => $id,
+    return get_attached_media( 'image', $id );
+    /* return get_children(array('post_parent' => $id,
                         'post_status' => 'inherit',
                         'post_type' => 'attachment',
                         'post_mime_type' => 'image',
                         'order' => 'ASC',
-                        'orderby' => 'menu_order ID'));
+                        'orderby' => 'menu_order ID')); */
   }
 
   public function copy_images($post){
@@ -328,16 +329,20 @@ class Lektorify {
 
         $image_path = parse_url($full_image_url[0], PHP_URL_PATH);
         
-        //$full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + strlen(basename($full_basepath)));
-
-        $full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + 1);
+        if ( get_option('permalink_structure') ) { 
+          $full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + 1);
+        }else{
+          $full_image_path = $full_basepath . substr($image_path, strpos($image_path, basename($full_basepath)) + strlen(basename($full_basepath)));
+        }
         
         $image_filename = basename($image_path);      
 
         /* Copy only if image finds a mention in the content or is full sized. */ 
         if (strpos($post->post_content, $image_filename)|| $size=='full') {
-          //echo $full_image_path."\n";
-          //echo $this->dir .'/blog/'.get_page_uri( $post->id ).'/'.$image_filename."\n\n";
+          if (php_sapi_name() == 'cli'){
+            echo $full_image_path."\n";
+            echo $this->dir .'/blog/'.get_page_uri( $post->id ).'/'.$image_filename."\n\n";
+          }
           copy($full_image_path, $this->dir .'/blog/'.get_page_uri( $post->id ).'/'.$image_filename);
         }
 
