@@ -300,6 +300,7 @@ class Lektorify {
 
   public function get_attachments($id){
     return get_attached_media( 'image', $id );
+    // Works only for new images added to this particular post.     
     /* return get_children(array('post_parent' => $id,
                         'post_status' => 'inherit',
                         'post_type' => 'attachment',
